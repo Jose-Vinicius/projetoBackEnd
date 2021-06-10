@@ -1,0 +1,12 @@
+<h2 class="display-4" style="font-weight: 400;">Nova categoria</h2>
+<div class="card">
+    <div class="card-body">
+        <form action="/admin/categoria/nova" method="POST">
+            <label for="nome">Nome:</label>
+                <input type="text" name="nome" id="nome" placeholder="Nome da Categoria" class="form-control">
+            <label for="slug">Slug:</label>
+                <input type="text" name="slug" id="slug" placeholder="Slug da categoria" class="form-control">
+            <button type="submit" class="btn btn-success mt-2" style="transition: 0.15s;">Enviar</button>
+        </form>
+    </div>
+</div>
