@@ -6,6 +6,24 @@ const path = require('path');
 const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const flash = require('connect-flash');
+
+//sesão
+app.use(session({
+    secret: "cursonode",
+    resave: true,
+    saveUninitialized: true
+}));
+//flash
+app.use(flash());
+
+//middleware
+app.use((req,res,next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    next();
+});
 
 //configurações
 app.use(express.urlencoded({extended: true}));
@@ -28,6 +46,10 @@ mongoose.connect('mongodb://localhost/projetoBackEnd',{
 //public
 app.use(express.static(path.join(__dirname,'public')))
 
+app.use((req,res,next) => {
+    console.log('Oi eu sou um middleware');
+    next();
+});
 
 //rotas
 app.get('/', (req, res) => {

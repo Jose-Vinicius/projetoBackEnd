@@ -31,6 +31,8 @@ router.post('/categorias/nova', (req, res) => {
     }).catch((err) => {
         console.log(`Erro na criação da categoria, ERRO: ${err}`);
     });
+
+    res.redirect('/admin/categorias/add')
 });
 
 module.exports = router;
