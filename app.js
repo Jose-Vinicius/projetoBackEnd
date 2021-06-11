@@ -16,7 +16,14 @@ app.engine('handlebars', handlebars({defaultLayout:'main'}));
 app.set('view engine','handlebars');
 
 //mongoose
-
+mongoose.connect('mongodb://localhost/projetoBackEnd',{
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Banco de dados rodando normalmente');
+}).catch((err) => {
+    console.log(`Houve um erro: ${err}`);
+});
 
 //public
 app.use(express.static(path.join(__dirname,'public')))
