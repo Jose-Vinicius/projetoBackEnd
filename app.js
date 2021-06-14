@@ -30,7 +30,13 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 //handlebars
-app.engine('handlebars', handlebars({defaultLayout:'main'}));
+app.engine('handlebars', handlebars({
+    defaultLayout:'main', 
+    runtimeOptions:{
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true
+    }
+}));
 app.set('view engine','handlebars');
 
 //mongoose

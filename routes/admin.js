@@ -14,8 +14,15 @@ router.get('/posts', (req, res) => {
 
 //exibição das categorias todas juntas
 router.get('/categorias', (req, res) => {
-    res.render('admin/categorias');
+    Categoria.find().lean().sort({date:'desc'}).then((categorias) => {
+        res.render("admin/categorias", {categorias: categorias});
+    }).catch((err) => {
+        res.flash('error_msg', "Houve um erro na listagem das categorias");
+        res.render('admin/categorias');
+    });
+    
 });
+
 //local para adicionar novas categorias
 router.get('/categorias/add', (req, res) => {
     res.render('admin/addCategorias');
@@ -63,6 +70,64 @@ router.post('/categorias/nova', (req, res) => {
             res.redirect('/admin/categorias')
         }).catch((err) => {
             req.flash("error_msg", `Houve um erro na hora da criação da categoria  ERRO: ${err}`);
+            res.redirect('/admin/categorias')
+        });
+    };
+});
+
+router.get('/categorias/edit/:id', (req, res) => {
+    Categoria.findOne({_id:req.params.id}).then((categoria) => {
+        res.render('admin/editCategorias', {categoria: categoria});
+    }).catch((err) => {
+        req.flash('error_msg', "Esta categoria não existe");
+        res.redirect('/admin/categorias');
+    });
+});
+
+router.post('/categorias/edit', (req, res) => {
+    let erros = [];
+
+    if(!req.body.nome){
+        erros.push({texto:'Nome invalido'});
+    };
+
+    if(req.body.nome.length < 2){
+        erros.push({texto: 'O nome é muito pequeno!'});
+    };
+
+    if(!req.body.slug){
+        erros.push({texto:'Slug invalido'});
+    };
+
+    if(!req.body.slug.trim){
+        erros.push({texto: 'O slug não pode conter espaço'});
+    };
+
+    if(!req.body.slug.toUpperCase){
+        erros.push({texto: 'O slug não pode conter letras maiúsculas'});
+    };
+
+    if(req.body.slug.length < 2){
+        erros.push({texto: 'O slug é muito pequeno!'});
+    };
+
+    if(erros.length > 0){
+        res.render('admin/editCategorias/', {erros: erros});
+        console.log('aqui');
+    } else{
+        Categoria.findOne({_id:req.body.id}).then((categoria) => {
+            categoria.nome = req.body.nome;
+            categoria.slug = req.body.slug;
+
+            categoria.save().then(() => {
+                req.flash('success_msg', 'Os dados foram alterados com sucesso');
+                res.redirect('/admin/categorias');
+            }).catch((err) => {
+                req.flash('error_msg', 'Houve um erro no momento de salvar a alteração');
+                res.redirect('/admin/categorias');
+            });
+        }).catch((err) => {
+            req.flash('error_msg', 'Erro na alteração de dados');
             res.redirect('/admin/categorias')
         });
     };
