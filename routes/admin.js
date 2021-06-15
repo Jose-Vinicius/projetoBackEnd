@@ -28,9 +28,13 @@ router.get('/categorias/add', (req, res) => {
     res.render('admin/addCategorias');
 });
 //local para ?
-router.post('/categorias/nova', (req, res) => {
-    //validação formulario
 
+function validacaoFormulario(req, nome, slug, body){
+
+}
+
+router.post('/categorias/nova', (req, res) => {
+//validação formulario
     let erros = [];
 
     if(!req.body.nome){
@@ -112,8 +116,13 @@ router.post('/categorias/edit', (req, res) => {
     };
 
     if(erros.length > 0){
-        res.render('admin/editCategorias/', {erros: erros});
-        console.log('aqui');
+        Categoria.findOne({_id:req.body.id}).then((categoria) => {
+            res.render('admin/editCategorias', {erros: erros, categoria: categoria});
+        }).catch((err) => {
+            req.flash('error_msg', 'Erro na alteração de dados');
+            res.redirect('/admin/categorias');
+        });
+        
     } else{
         Categoria.findOne({_id:req.body.id}).then((categoria) => {
             categoria.nome = req.body.nome;
@@ -128,9 +137,19 @@ router.post('/categorias/edit', (req, res) => {
             });
         }).catch((err) => {
             req.flash('error_msg', 'Erro na alteração de dados');
-            res.redirect('/admin/categorias')
+            res.redirect('/admin/categorias');
         });
     };
+});
+
+router.post('/categorias/delet', (req, res) => {
+    Categoria.deleteOne({_id: req.body.id}).then(() => {
+        req.flash('success_msg','A categoria foi deletada com sucesso');
+        res.redirect('/admin/categorias');
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve um erro ao deletar a categoria!');
+        res.redirect('/admin/categorias');
+    });
 });
 
 module.exports = router;
