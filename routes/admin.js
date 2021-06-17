@@ -153,10 +153,6 @@ const Postagem = mongoose.model('postagem');
         });
 
 //POSTAGENS
-    //pagina onde sera exibida todas as postagens ja criadas
-        router.get('/postagens', (req, res) => {
-            res.render("admin/postagens")
-        });
     //pagina para criar postagem
         router.get('/postagens/add', (req, res) => {
             Categoria.find().then((categorias) => {
@@ -178,7 +174,8 @@ const Postagem = mongoose.model('postagem');
                     slug: req.body.slug,
                     descricao: req.body.descricao,
                     conteudo: req.body.conteudo,
-                    categoria: req.body.categoria
+                    categoria: req.body.categoria,
+                    imagem: req.body.imagem
                 };
             
                 new Postagem(novaPostagem).save().then(() => {
@@ -190,5 +187,15 @@ const Postagem = mongoose.model('postagem');
                 });
             };
         });
+    //exibir as postagens na pagina de postagens
+        router.get('/postagens', (req, res) => {
+            Postagem.find().lean().sort({data: 'desc'}).then((postagens) => {
+                res.render("admin/postagens", {postagens: postagens});
+            }).catch((err) => {
+                res.flash('error_msg', "Houve um erro na listagem das postagens");
+                res.render('admin/postagens');
+            });
+        });
+
 module.exports = router;
 

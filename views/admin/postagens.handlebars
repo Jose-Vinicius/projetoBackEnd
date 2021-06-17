@@ -1,3 +1,19 @@
 <h2 >Lista de postagens</h2>
 <hr>
 <a href="/admin/postagens/add"><button class="btn btn-success" style="transition: 0.15s;">Nova postagem</button></a>
+
+{{#each postagens}}
+    <div class="card mt-4 mb-4">
+        <div class="card-body">
+            <h4>{{titulo}}</h4>
+            <small>{{slug}}</small> <br>
+            <small>{{categoria}}</small>
+            <p>{{conteudo}}</p>
+            <img src="{{imagem}}" width="100%">
+            <small>{{descricao}}</small> <br>
+            <small>{{data}}</small>
+        </div>
+    </div>
+{{else}}
+    <h4 class="mt-3">Nenhuma postagem para ser exibida</h4>
+{{/each}}

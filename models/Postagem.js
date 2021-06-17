@@ -18,6 +18,10 @@ const Postagem = new Schema({
         type: String,
         required: true
     },
+    imagem: {
+        type: String,
+        required: true
+    },
     categoria: {
         type: Schema.Types.ObjectId,
         ref: 'categorias',
